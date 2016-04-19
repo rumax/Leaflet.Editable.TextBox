@@ -217,7 +217,7 @@ L.TextBox.include({
  * @param  {Object=} options
  * @return {L.TextBox}
  */
-L.Editable.startTextBox = function(latlng, options) {
+L.Editable.prototype.startTextBox = function(latlng, options) {
   return this.startRectangle(null, L.extend({
     rectangleClass: L.TextBox
   }, options));
