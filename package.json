@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "watch": "watchify -v -d -s L.Editable.Textbox ./demo/js/index.js -o ./demo/js/build.js",
-    "build-js": "browserify -v -d -s L.Editable.Textbox ./index.js -o ./dist/L.Editable.Textbox-src.js",
+    "build-js": "browserify -v -d -s L.Editable.Textbox -u leaflet -u leaflet-editable ./index.js -o ./dist/L.Editable.Textbox-src.js",
     "compress": "uglifyjs ./dist/L.Editable.Textbox-src.js -o ./dist/L.Editable.Textbox.js --comments -m",
     "serve": "serve -p 3002",
     "lint": "eslint ./src/",
