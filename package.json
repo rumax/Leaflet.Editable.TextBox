@@ -1,33 +1,34 @@
 {
-  "name": "leaflet-schematic-editable-textbox",
+  "name": "leaflet-editable-textbox",
   "version": "1.0.0",
-  "description": "TextBox for Leaflet.Editable & leaflet-schematic",
+  "description": "TextBox for Leaflet.Editable",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "watch": "watchify -v -d -t [ babelify --presets [ es2015 ] ] -s L.SVGOverlay demo/js/index.js -o demo/js/build.js",
+    "watch": "watchify -v -d -s L.Editable.TextBox demo/js/index.js -o demo/js/build.js",
     "serve": "serve -p 3002",
+    "lint": "eslint ./src/",
     "start": "npm run watch & npm run serve"
   },
   "author": "rumax",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rumax/leaflet-schematic-textBox.git"
+    "url": "https://github.com/rumax/Leaflet.Editable.TextBox.git"
   },
   "dependencies": {
-    "Base64": "^0.3.0",
-    "leaflet": "^1.0.0-beta.2",
+    "leaflet": "1.0.0-beta.2",
     "leaflet-editable": "github:leaflet/leaflet.editable#gh-pages",
-    "leaflet-path-transform": "0.0.6",
-    "leaflet-schematic": "^1.0.0-beta.1"
+    "leaflet-path-transform": "^1.0.0-beta.4"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
     "babelify": "^7.2.0",
     "browser-filesaver": "^1.1.1",
     "browserify": "^13.0.0",
+    "eslint": "^2.8.0",
     "faucet": "0.0.1",
+    "leaflet-schematic": "^1.0.0-beta.1",
     "serve": "^1.4.0",
     "tape": "^4.4.0",
     "watchify": "^3.7.0",

@@ -1,7 +1,7 @@
 var L = require('leaflet');
 require('leaflet-editable');
-require('./../../index');
-require('./../../src/Leaflet.SVG');
+require('../../');
+require('../../src/SVG');
 
 var SVGOverlay = require('leaflet-schematic');
 var xhr = global.xhr = require('xhr');
@@ -61,9 +61,8 @@ L.EditControl = L.Control.extend({
           L.latLng([0, 0]), {
             ratio: svg._ratio,
             renderer: svg._renderer,
-            fontSize: L.SVG.calcFontSize(svg._renderer._container).size,
-            fontColor: '#55f',
-            fontFamily: '"Times New Roman", Times, serif'
+            fontSize: Math.max(L.SVG.calcFontSize(svg._renderer._container).size, 200),
+            fontColor: '#55f'
           }
         );
       }, this);
