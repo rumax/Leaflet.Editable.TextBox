@@ -1,6 +1,6 @@
 var L = require('leaflet');
 require('leaflet-path-transform/src/Matrix');
-require('./src/TextBox');
+require('./src/Textbox');
 require('./src/Util');
 require('./src/Editable.Textbox')
 

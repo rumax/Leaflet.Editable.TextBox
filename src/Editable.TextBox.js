@@ -9,6 +9,15 @@
 
 L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
 
+  options: {
+    textareaPadding: 1
+  },
+
+  /**
+   * @param  {L.Map}     map
+   * @param  {L.Textbox} feature
+   * @param  {Object=}   options
+   */
   initialize: function(map, feature, options) {
 
     /**
@@ -27,7 +36,7 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
 
   updateStyle: function() {
     if (null !== this._textArea) {
-      var style = this._textArea.style;
+      var style   = this._textArea.style;
       var options = this.feature.options;
 
       style.fontSize   = options.fontSize + 'px';
@@ -48,13 +57,13 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
       this._textArea = L.DomUtil.create('textarea',
         'leaflet-zoom-animated leaflet-textbox');
       var style = this._textArea.style;
-      style.resize = 'none';
-      style.border = 'none';
-      style.padding = '1px';
+      style.resize          = 'none';
+      style.border          = 'none';
+      style.padding         = this.options.textareaPadding + 'px';
       style.backgroundColor = 'transparent';
 
       this.updateStyle();
-      this.map._panes.markerPane.appendChild(this._textArea);
+      this.map.getPane('markerPane').appendChild(this._textArea);
 
       if (this._text) {
         this._textArea.innerHTML = this._text;
@@ -85,9 +94,9 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
   disable: function() {
     if (this._enabled) {
       this.map
-          .off('dragend', this._focus, this)
-          .off('zoomanim', this._animateZoom, this)
-          .off('zoomend', this._updateTextAreaBounds, this);
+        .off('dragend',  this._focus, this)
+        .off('zoomanim', this._animateZoom, this)
+        .off('zoomend',  this._updateTextAreaBounds, this);
 
       if (null !== this.textArea) {
         this.getText();
@@ -117,42 +126,44 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
   },
 
 
+  /**
+   * Animated resize
+   * @param  {Event} evt
+   */
   _animateZoom: function(evt) {
     var bounds = this.feature._bounds;
-    var map = this.map;
-    var scale = map.getZoomScale(evt.zoom);
-    var offset = map._latLngToNewLayerPoint(
+    var scale  = this.feature._getScale(evt.zoom);
+    var offset = this.map._latLngToNewLayerPoint(
       bounds.getNorthWest(), evt.zoom, evt.center);
 
-    L.DomUtil.setTransform(this._textArea, offset, scale);
+    L.DomUtil.setTransform(this._textArea, offset, scale.toFixed(3));
   },
 
 
+  /**
+   * Resize, reposition on zoom end or resize
+   */
   _updateTextAreaBounds: function() {
-    var scale;
-    var latlngs;
-    var pos;
-    var size;
-    var bounds = this.feature._bounds;
+    var scale, latlngs, pos, size;
+    var feature  = this.feature;
+    var bounds   = feature._bounds;
+    var textArea = this._textArea;
+    var map      = this.map;
 
-    if (null !== this._textArea) {
+    if (null !== textArea) {
       if (null !== bounds) {
-        scale = this.feature._getScale();
-        latlngs = this.feature._boundsToLatLngs(bounds);
-        pos = this.map.latLngToLayerPoint(latlngs[1]);
-        size = this.map.latLngToLayerPoint(latlngs[3]).subtract(pos);
+        scale = feature._getScale(map.getZoom());
+        latlngs = feature._boundsToLatLngs(bounds);
+        pos = map.latLngToLayerPoint(latlngs[1]);
+        size = map.latLngToLayerPoint(latlngs[3]).subtract(pos);
         L.DomUtil
-           .setSize(this._textArea, {
-             x: size.x / scale,
-             y: size.y / scale
-           })
-           .setPosition(this._textArea, pos);
-        this._textArea.style.transform += ' scale(' + scale + ')';
-        this._textArea.style.display = '';
-        this._textArea.setAttribute('spellcheck', false);
+           .setSize(textArea, size.divideBy(scale).round())
+           .setTransform(textArea, pos, scale.toFixed(3));
+        textArea.style.display = '';
+        textArea.setAttribute('spellcheck', false);
         this._focus();
       } else {
-        this._textArea.style.display = 'none';
+        textArea.style.display = 'none';
       }
     }
 
@@ -170,10 +181,10 @@ L.TextBox.include({
     }
     var ret = L.Rectangle.prototype.enableEdit.call(this, map);
 
-    //remove text node
-    this._textNode = this._text2svg(this._textNode, null);
-
-
+    if (this._textNode) {
+      this._textNode.parentNode.removeChild(this._textNode);
+      this._textNode = null;
+    }
 
     ret = L.Rectangle.prototype.enableEdit.call(this, map);
     this.editor.setText(this._text);
@@ -188,17 +199,17 @@ L.TextBox.include({
     }
 
     L.Rectangle.prototype.disableEdit.call(this);
-    this._processText();
+    this._renderText();
 
     return this;
+  },
+
+
+  getEditorClass: function() {
+    return L.Editable.TextBoxEditor;
   }
 
 });
-
-
-L.TextBox.prototype.getEditorClass = function() {
-  return L.Editable.TextBoxEditor;
-};
 
 
 /**

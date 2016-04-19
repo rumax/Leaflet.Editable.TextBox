@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "watch": "watchify -v -d -s L.Editable.TextBox demo/js/index.js -o demo/js/build.js",
+    "watch": "watchify -v -d -s L.Editable.Textbox ./demo/js/index.js -o ./demo/js/build.js",
+    "build-js": "browserify -v -d -s L.Editable.Textbox ./index.js -o ./dist/L.Editable.Textbox-src.js",
+    "compress": "uglifyjs ./dist/L.Editable.Textbox-src.js -o ./dist/L.Editable.Textbox.js --comments -m",
     "serve": "serve -p 3002",
     "lint": "eslint ./src/",
+    "build": "npm run lint && npm run build-js && npm run compress",
     "start": "npm run watch & npm run serve"
   },
   "author": "rumax",
@@ -31,6 +34,7 @@
     "leaflet-schematic": "^1.0.0-beta.1",
     "serve": "^1.4.0",
     "tape": "^4.4.0",
+    "uglifyjs": "^2.4.10",
     "watchify": "^3.7.0",
     "xhr": "^2.2.0"
   }
