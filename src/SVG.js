@@ -92,7 +92,8 @@ L.SVG.include({
           var prevLine = line;
           line += char;
           tspan.firstChild.nodeValue = line;
-          var lineLength = layer.options.padding + tspan.getBBox().width;
+          var lineLength = layer.options.padding +
+            tspan.getComputedTextLength();
 
           if (lineLength > maxWidth && 1 <= line.length) {
             ++lineInd;

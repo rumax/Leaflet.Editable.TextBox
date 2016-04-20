@@ -74,7 +74,7 @@ L.EditControl = L.Control.extend({
 L.NewTextControl = L.EditControl.extend({
   options: {
     position: 'topleft',
-    callback: L.Editable.startTextBox,
+    callback: L.Editable.prototype.startTextBox,
     kind: 'text',
     html: 'T'
   }
