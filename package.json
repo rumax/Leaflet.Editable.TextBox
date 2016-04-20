@@ -20,17 +20,18 @@
     "url": "https://github.com/rumax/Leaflet.Editable.TextBox.git"
   },
   "dependencies": {
-    "leaflet": "1.0.0-beta.2",
-    "leaflet-editable": "github:leaflet/leaflet.editable#gh-pages",
+    "leaflet": "^1.0.0-beta.2",
     "leaflet-path-transform": "^1.0.0-beta.4"
   },
   "devDependencies": {
+    "leaflet-editable": "github:leaflet/leaflet.editable#gh-pages",
     "babel-preset-es2015": "^6.3.13",
     "babelify": "^7.2.0",
     "browser-filesaver": "^1.1.1",
     "browserify": "^13.0.0",
     "eslint": "^2.8.0",
     "faucet": "0.0.1",
+    "leaflet-editable": "github:leaflet/leaflet.editable#gh-pages",
     "leaflet-schematic": "^1.0.0-beta.1",
     "serve": "^1.4.0",
     "tape": "^4.4.0",
