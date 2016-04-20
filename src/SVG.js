@@ -9,7 +9,6 @@
 var DEFAULT_SIZE = 12;
 var LINE_FACTOR  = 1.12;
 
-
 /**
  * @param  {SVGElement} svg
  * @return {Object}

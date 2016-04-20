@@ -1,9 +1,6 @@
 
 L.TextBox = L.Rectangle.extend({
 
-  _text: 'Please, add text',
-  _textNode: null,
-
   options: {
     padding: 2,
     fontSize: 12,
@@ -12,8 +9,18 @@ L.TextBox = L.Rectangle.extend({
     weight: 1,
     fontColor: '',
     fontFamily: '',
-    ratio: 1
+    ratio: 1,
+    text: 'Please, add text'
+
     //TODO: wrapBy: 'letter', 'char', 'nowrap', etc.
+  },
+
+
+  initialize: function(bounds, options) {
+    L.Rectangle.prototype.initialize.call(this, bounds, options);
+
+    this._text = this.options.text;
+    this._textNode = null;
   },
 
 

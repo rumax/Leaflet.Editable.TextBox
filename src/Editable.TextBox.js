@@ -159,8 +159,11 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
         L.DomUtil
            .setSize(textArea, size.divideBy(scale).round())
            .setTransform(textArea, pos, scale.toFixed(3));
-        textArea.style.display = '';
+
+        textArea.style.display  = '';
+        textArea.style.position = 'absolute';
         textArea.setAttribute('spellcheck', false);
+
         this._focus();
       } else {
         textArea.style.display = 'none';

@@ -1,5 +1,4 @@
 var L = require('leaflet');
-require('leaflet-editable');
 require('../../');
 require('../../src/SVG');
 
