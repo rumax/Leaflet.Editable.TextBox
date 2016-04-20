@@ -1,6 +1,6 @@
 {
   "name": "leaflet-editable-textbox",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "TextBox for Leaflet.Editable",
   "main": "index.js",
   "scripts": {
@@ -31,7 +31,6 @@
     "browserify": "^13.0.0",
     "eslint": "^2.8.0",
     "faucet": "0.0.1",
-    "leaflet-editable": "github:leaflet/leaflet.editable#gh-pages",
     "leaflet-schematic": "^1.0.0-beta.1",
     "serve": "^1.4.0",
     "tape": "^4.4.0",
