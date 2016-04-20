@@ -9,7 +9,7 @@
     "build-js": "browserify -v -d -s L.Editable.Textbox -u leaflet -u leaflet-editable ./index.js -o ./dist/L.Editable.Textbox-src.js",
     "compress": "uglifyjs ./dist/L.Editable.Textbox-src.js -o ./dist/L.Editable.Textbox.js --comments -m",
     "serve": "serve -p 3002",
-    "lint": "eslint ./src/",
+    "lint": "eslint index.js && eslint ./src/",
     "build": "npm run lint && npm run build-js && npm run compress",
     "start": "npm run watch & npm run serve"
   },
