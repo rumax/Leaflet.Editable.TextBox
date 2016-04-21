@@ -8,5 +8,6 @@ require('leaflet-path-transform/src/Matrix');
 require('./src/Textbox');
 require('./src/Util');
 require('./src/Editable.Textbox');
+require('./src/SVG');
 
 module.exports = L.Editable.TextBoxEditor;
