@@ -65,11 +65,17 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
       this.updateStyle();
       this.map.getPane('markerPane').appendChild(this._textArea);
 
+      this._text = this.feature._text;
       if (this._text) {
         this._textArea.innerHTML = this._text;
       }
 
       this._updateTextAreaBounds();
+    }
+
+    if (this.feature._textNode) {
+      this.feature._textNode.parentNode.removeChild(this.feature._textNode);
+      this.feature._textNode = null;
     }
 
     return this;
@@ -103,6 +109,8 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
         this._textArea.parentNode.removeChild(this._textArea);
         this._textArea = null;
       }
+      this.feature._text = this._text;
+      this.feature._renderText();
     }
 
     L.Editable.RectangleEditor.prototype.disable.call(this);
@@ -182,17 +190,7 @@ L.TextBox.include({
     if (!this.editor) {
       this.createEditor(map);
     }
-    var ret = L.Rectangle.prototype.enableEdit.call(this, map);
-
-    if (this._textNode) {
-      this._textNode.parentNode.removeChild(this._textNode);
-      this._textNode = null;
-    }
-
-    ret = L.Rectangle.prototype.enableEdit.call(this, map);
-    this.editor.setText(this._text);
-
-    return ret;
+    return L.Rectangle.prototype.enableEdit.call(this, map);
   },
 
 
@@ -202,7 +200,6 @@ L.TextBox.include({
     }
 
     L.Rectangle.prototype.disableEdit.call(this);
-    this._renderText();
 
     return this;
   },
