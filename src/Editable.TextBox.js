@@ -70,6 +70,9 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
         this._textArea.innerHTML = this._text;
       }
 
+      L.DomEvent
+        .addListener(this._textArea, 'mousedown', this._mouseEvents, this)
+        .addListener(this._textArea, 'click', this._mouseEvents, this);
       this._updateTextAreaBounds();
     }
 
@@ -106,6 +109,9 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
 
       if (null !== this.textArea) {
         this.getText();
+        L.DomEvent
+          .removeListener(this._textArea, 'mousedown', this._mouseEvents, this)
+          .removeListener(this._textArea, 'click', this._mouseEvents, this);
         this._textArea.parentNode.removeChild(this._textArea);
         this._textArea = null;
       }
@@ -179,6 +185,13 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
     }
 
     return this;
+  },
+
+  /**
+   * Prevents map from drag on selection and hadles click inside element
+   */
+  _mouseEvents: function(evt) {
+    L.DomEvent.stopPropagation(evt);
   }
 
 });
