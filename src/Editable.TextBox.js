@@ -56,11 +56,12 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
     if (null === this._textArea) {
       this._textArea = L.DomUtil.create('textarea',
         'leaflet-zoom-animated leaflet-textbox');
-      var style = this._textArea.style;
+      var style = this._textArea.style; //TODO: Use css
       style.resize          = 'none';
       style.border          = 'none';
       style.padding         = this.options.textareaPadding + 'px';
       style.backgroundColor = 'transparent';
+      style.overflow = 'hidden';
 
       this.updateStyle();
       this.map.getPane('markerPane').appendChild(this._textArea);
