@@ -71,9 +71,9 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
         this._textArea.innerHTML = this._text;
       }
 
-      L.DomEvent
-        .addListener(this._textArea, 'mousedown', this._mouseEvents, this)
-        .addListener(this._textArea, 'click', this._mouseEvents, this);
+      L.DomEvent.addListener(this._textArea, 'keypress',
+        L.DomEvent.stopPropagation);
+      L.DomEvent.disableClickPropagation(this._textArea);
       this._updateTextAreaBounds();
     }
 
@@ -108,11 +108,10 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
         .off('zoomanim', this._animateZoom, this)
         .off('zoomend',  this._updateTextAreaBounds, this);
 
-      if (null !== this.textArea) {
+      if (null !== this._textArea) {
         this.getText();
-        L.DomEvent
-          .removeListener(this._textArea, 'mousedown', this._mouseEvents, this)
-          .removeListener(this._textArea, 'click', this._mouseEvents, this);
+        L.DomEvent.removeListener(this._textArea, 'keypress',
+          L.DomEvent.stopPropagation);
         this._textArea.parentNode.removeChild(this._textArea);
         this._textArea = null;
       }
@@ -133,11 +132,11 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
 
 
   _focus: function() {
-    if (null !== this._textArea) {
-      L.Util.requestAnimFrame(function() {
+    L.Util.requestAnimFrame(function() {
+      if (null !== this._textArea) {
         this._textArea.focus();
-      }, this);
-    }
+      }
+    }, this);
   },
 
 
@@ -186,13 +185,6 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
     }
 
     return this;
-  },
-
-  /**
-   * Prevents map from drag on selection and hadles click inside element
-   */
-  _mouseEvents: function(evt) {
-    L.DomEvent.stopPropagation(evt);
   }
 
 });
