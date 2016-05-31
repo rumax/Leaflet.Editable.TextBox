@@ -1,6 +1,6 @@
 {
   "name": "leaflet-editable-textbox",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "TextBox for Leaflet.Editable",
   "main": "index.js",
   "scripts": {
