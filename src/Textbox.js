@@ -50,11 +50,13 @@ L.TextBox = L.Rectangle.extend({
 
 
   _renderText: function() {
-    this._textNode = this._renderer.renderText(this);
-    this._path.parentNode
-        .insertBefore(this._textNode, this._path.nextSibling);
-    this.updateStyle();
-    this._updatePosition();
+    if (this._renderer) {
+      this._textNode = this._renderer.renderText(this);
+      this._path.parentNode
+          .insertBefore(this._textNode, this._path.nextSibling);
+      this.updateStyle();
+      this._updatePosition();
+    }
   },
 
 
