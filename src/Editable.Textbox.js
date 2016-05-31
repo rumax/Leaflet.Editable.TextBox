@@ -96,7 +96,9 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
 
 
   getText: function() {
-    this._text = this._textArea.value;
+    if (this._enabled) {
+      this._text = this._textArea.value;
+    }
     return this._text;
   },
 
@@ -116,7 +118,10 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
         this._textArea = null;
       }
       this.feature._text = this._text;
-      this.feature._renderText();
+
+      if (this.map.hasLayer(this.feature)) {
+        this.feature._renderText();
+      }
     }
 
     L.Editable.RectangleEditor.prototype.disable.call(this);
