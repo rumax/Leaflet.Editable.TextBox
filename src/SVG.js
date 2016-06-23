@@ -19,18 +19,21 @@ L.SVG.calcFontSize = L.SVG.calcFontSize || function(svg) {
   var sizeMax = Number.MIN_VALUE;
   var texts   = svg.querySelectorAll('text');
   var textSize;
+  var fontSizeAttr;
 
   if (0 < texts.length) {
     size = 0;
     for (var ind = texts.length - 1; 0 <= ind; --ind) {
-      textSize = parseFloat(texts[ind].getAttribute('font-size'));
-      size += textSize;
-      if (sizeMin > textSize) {
-        sizeMin = textSize;
-      }
-
-      if (sizeMax < textSize) {
-        sizeMax = textSize;
+      fontSizeAttr = texts[ind].getAttribute('font-size');
+      if (null !== fontSizeAttr) {
+	textSize = parseFloat(texts[ind].getAttribute('font-size'));
+	size += textSize;
+	if (sizeMin > textSize) {
+          sizeMin = textSize;
+	}
+	if (sizeMax < textSize) {
+          sizeMax = textSize;
+	}
       }
     }
 
