@@ -49,6 +49,21 @@ L.TextBox = L.Rectangle.extend({
   },
 
 
+
+  /**
+   * @param  {L.Map} map
+   */
+  onRemove: function(map) {
+    if (null !== this._textNode) {
+      if (null !== this._textNode.parentNode) {
+        this._textNode.parentNode.removeChild(this._textNode);
+      }
+      this._textNode = null;
+    }
+    L.Rectangle.prototype.onRemove.call(this, map);
+  },
+
+
   _renderText: function() {
     if (this._renderer) {
       this._textNode = this._renderer.renderText(this);
