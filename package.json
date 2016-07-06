@@ -4,7 +4,6 @@
   "description": "TextBox for Leaflet.Editable",
   "main": "index.js",
   "scripts": {
-    "postinstall": "rimraf ./node_modules/leaflet-editable/node_modules/leaflet",
     "test": "echo \"Error: no test specified\" && exit 0",
     "watch": "watchify -v -d -s L.Editable.Textbox ./demo/js/index.js -o ./demo/js/build.js",
     "build-js": "browserify -v -d -s L.Editable.Textbox -u leaflet -u leaflet-editable ./index.js -o ./dist/L.Editable.Textbox-src.js",
