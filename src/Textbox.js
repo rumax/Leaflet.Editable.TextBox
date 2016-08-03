@@ -76,8 +76,9 @@ L.TextBox = L.Rectangle.extend({
 
 
   _updatePosition: function() {
-    if (null !== this._textNode && 0 !== this._rings.length) {
-      var pos = this._rings[0][1];
+    if (null !== this._textNode) {
+      var bounds = this.getBounds();
+      var pos = this._map.latLngToLayerPoint(bounds.getNorthWest());
       var textMatrix = new L.Matrix(1, 0, 0, 1, 0, 0)
         .translate(pos)
         .scale(this._getScale(this._map.getZoom()));
