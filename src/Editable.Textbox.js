@@ -163,23 +163,31 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
    * Resize, reposition on zoom end or resize
    */
   _updateTextAreaBounds: function() {
-    var scale, latlngs, pos, size;
+    var scale;
+    var pos;
+    var size;
+    var center;
     var feature  = this.feature;
     var bounds   = feature._bounds;
     var textArea = this._textArea;
     var map      = this.map;
+    var bounds;
 
     if (null !== textArea) {
       if (null !== bounds) {
         scale = feature._getScale(map.getZoom());
-        latlngs = feature._boundsToLatLngs(bounds);
-        pos = map.latLngToLayerPoint(latlngs[1]);
-        size = map.latLngToLayerPoint(latlngs[3]).subtract(pos);
-        L.DomUtil
-           .setSize(textArea, size.divideBy(scale).round())
-           .setTransform(textArea, pos, scale.toFixed(3));
+        bounds = feature.getBounds();
+        center = map.latLngToLayerPoint(bounds.getCenter());
+        pos = map.latLngToLayerPoint(bounds.getNorthWest());
+        size = L.point(2 * Math.abs(center.x - pos.x),
+                       2 * Math.abs(center.y - pos.y))
+                 .divideBy(scale)
+                 .round();
 
-        textArea.style.display  = '';
+        L.DomUtil
+           .setSize(textArea, size)
+           .setTransform(textArea, pos, scale.toFixed(3));
+        textArea.style.display = '';
         textArea.style.position = 'absolute';
         textArea.setAttribute('spellcheck', false);
 

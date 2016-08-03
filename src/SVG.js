@@ -67,9 +67,11 @@ L.SVG.include({
 
     if (text) {
       var scale = layer._getScale(this._map.getZoom());
-      var pos   = layer._rings[0][1];
-      var size  = layer._rings[0][3].subtract(pos).divideBy(scale);
-
+      var bounds = layer.getBounds();
+      var center = layer._map.latLngToLayerPoint(bounds.getCenter());
+      var pos = layer._map.latLngToLayerPoint(bounds.getNorthWest());
+      var size = L.point(2 * Math.abs(center.x - pos.x),
+                         2 * Math.abs(center.y - pos.y)).divideBy(scale);
       var chars = text.split('');
       var line = chars.shift();
       var char = chars.shift();
