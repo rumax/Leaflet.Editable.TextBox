@@ -5,7 +5,7 @@ require('../../src/SVG');
 var SVGOverlay = require('leaflet-schematic');
 var xhr = global.xhr = require('xhr');
 
-var map = L.map('map', {
+var map = global.map = L.map('map', {
   crs: L.CRS.Simple,
   minZoom: 0,
   maxZoom: 20,
@@ -78,6 +78,16 @@ L.NewTextControl = L.EditControl.extend({
     html: 'T'
   }
 });
+
+// map.on('click', function (evt) {
+//
+//   map.getLayers().filter(function (l) {
+//     return l instanceof L.TextBox;
+//   })
+//   .forEach(function (l) {
+//     l.editor && l.editor.disable();
+//   })
+// });
 
 
 map.addControl(new L.NewTextControl());
