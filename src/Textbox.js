@@ -49,6 +49,22 @@ L.TextBox = L.Rectangle.extend({
   },
 
 
+  getText: function () {
+    if (this._textNode) {
+      return Array.prototype.slice.call(this._textNode.childNodes)
+        .filter(function (node) {
+          return node.tagName.toLowerCase() === 'tspan';
+        })
+        .map(function (node) {
+          this.options.lineHeight = node.getAttribute('dy');
+          return node.textContent;
+        }, this);
+    } else {
+      return this._text;
+    }
+  },
+
+
 
   /**
    * @param  {L.Map} map
@@ -97,6 +113,12 @@ L.TextBox = L.Rectangle.extend({
   _updatePath: function() {
     L.Rectangle.prototype._updatePath.call(this);
     this._updatePosition();
+  },
+
+
+  toGeoJSON: function () {
+    var gj = L.Rectangle.prototype.toGeoJSON.call(this);
+    gj.properties.text = this._text;
   }
 
 });

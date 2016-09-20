@@ -26,14 +26,14 @@ L.SVG.calcFontSize = L.SVG.calcFontSize || function(svg) {
     for (var ind = texts.length - 1; 0 <= ind; --ind) {
       fontSizeAttr = texts[ind].getAttribute('font-size');
       if (null !== fontSizeAttr) {
-	textSize = parseFloat(texts[ind].getAttribute('font-size'));
-	size += textSize;
-	if (sizeMin > textSize) {
+      	textSize = parseFloat(texts[ind].getAttribute('font-size'));
+      	size += textSize;
+      	if (sizeMin > textSize) {
           sizeMin = textSize;
-	}
-	if (sizeMax < textSize) {
+      	}
+      	if (sizeMax < textSize) {
           sizeMax = textSize;
-	}
+      	}
       }
     }
 
@@ -81,6 +81,7 @@ L.SVG.include({
         x: layer.options.padding
       });
       var lineHeight = textElement.getBBox().height;
+      console.log(lineHeight);
       tspan.setAttribute('dy', lineHeight);
 
       while (char) {
