@@ -1,9 +1,11 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "node": true
   },
   "globals": {
-    "L": true
+    "L": true,
+    "require": true
   },
   "rules": {
     "yoda": 0,

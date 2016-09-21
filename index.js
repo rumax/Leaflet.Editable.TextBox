@@ -1,6 +1,3 @@
-/*eslint no-undef: "error"*/
-/*eslint-env node*/
-
 var L = require('leaflet');
 
 require('leaflet-editable');
@@ -9,5 +6,6 @@ require('./src/Textbox');
 require('./src/Util');
 require('./src/Editable.Textbox');
 require('./src/SVG');
+require('./src/SVG_text');
 
 module.exports = L.Editable.TextBoxEditor;
