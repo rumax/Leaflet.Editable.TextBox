@@ -83,8 +83,8 @@ L.TextBox = L.Rectangle.extend({
 
 
   _renderText: function() {
-    if (this._renderer) {
-      if (0 < this._text.length) {
+    if (this._renderer && true === this._map.hasLayer(this)) {
+      if (0 < this.getText().length) {
         var options = this.options;
         var rendered = new L.SVG.TextToSvg(this.getText(), {
           size: this.getSize(),
