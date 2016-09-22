@@ -5,13 +5,13 @@
  * @license MIT
  */
 
-/* eslint-disable no-console */
-
 L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
 
   options: {
-    textareaPadding: 1
+    textareaPadding: 1,
+    placeholder: 'Please, add text here ...'
   },
+
 
   /**
    * @param  {L.Map}     map
@@ -19,29 +19,61 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
    * @param  {Object=}   options
    */
   initialize: function(map, feature, options) {
-
     /**
      * @type {HTMLTextAreaElement}
      */
-    this._textArea = null;
+    this._container = null;
 
     /**
      * @type {String}
      */
     this._text     = null;
 
-    L.Editable.RectangleEditor.prototype.initialize.call(this, map, feature, options);
+    L.Editable.RectangleEditor.prototype.initialize
+      .call(this, map, feature, options);
   },
 
 
   updateStyle: function() {
-    if (null !== this._textArea) {
-      var style   = this._textArea.style;
+    if (null !== this._container) {
+      var style   = this._container.style;
       var options = this.feature.options;
 
       style.fontSize   = options.fontSize + 'px';
       style.color      = options.fontColor;
       style.fontFamily = options.fontFamily;
+    }
+  },
+
+
+  _createContainer: function() {
+    if (null === this._container) {
+      this._container = L.DomUtil.create('textarea',
+        'leaflet-zoom-animated leaflet-textbox');
+      var style = this._container.style;
+
+      style.resize          = 'none';
+      style.border          = 'none';
+      style.padding         = this.options.textareaPadding + 'px';
+      style.backgroundColor = 'transparent';
+      style.overflow = 'hidden';
+
+      if (this.options.placeholder) {
+        this._container.setAttribute('placeholder', this.options.placeholder);
+      }
+
+      this.updateStyle();
+      this.map.getPane('markerPane').appendChild(this._container);
+
+      this._text = this.feature.getText();
+      if (this._text) {
+        this._container.innerHTML = this._text;
+      }
+
+      L.DomEvent.addListener(this._container, 'keypress',
+        L.DomEvent.stopPropagation);
+      L.DomEvent.disableClickPropagation(this._container);
+      this._updateTextAreaBounds();
     }
   },
 
@@ -52,35 +84,8 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
         .on('dragend', this._focus, this)
         .on('zoomanim', this._animateZoom, this)
         .on('zoomend', this._updateTextAreaBounds, this);
-
-    if (null === this._textArea) {
-      this._textArea = L.DomUtil.create('textarea',
-        'leaflet-zoom-animated leaflet-textbox');
-      var style = this._textArea.style; //TODO: Use css
-      style.resize          = 'none';
-      style.border          = 'none';
-      style.padding         = this.options.textareaPadding + 'px';
-      style.backgroundColor = 'transparent';
-      style.overflow = 'hidden';
-
-      this.updateStyle();
-      this.map.getPane('markerPane').appendChild(this._textArea);
-
-      this._text = this.feature._text;
-      if (this._text) {
-        this._textArea.innerHTML = this._text;
-      }
-
-      L.DomEvent.addListener(this._textArea, 'keypress',
-        L.DomEvent.stopPropagation);
-      L.DomEvent.disableClickPropagation(this._textArea);
-      this._updateTextAreaBounds();
-    }
-
-    if (this.feature._textNode) {
-      this.feature._textNode.parentNode.removeChild(this.feature._textNode);
-      this.feature._textNode = null;
-    }
+    this._createContainer();
+    this.feature._removeContainer();
 
     return this;
   },
@@ -89,15 +94,15 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
   setText: function(text) {
     this._text = text;
 
-    if (null !== this._textArea) {
-      this._textArea.value = text;
+    if (null !== this._container) {
+      this._container.value = text;
     }
   },
 
 
   getText: function() {
     if (this._enabled) {
-      this._text = this._textArea.value;
+      this._text = this._container.value;
     }
     return this._text;
   },
@@ -110,18 +115,15 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
         .off('zoomanim', this._animateZoom, this)
         .off('zoomend',  this._updateTextAreaBounds, this);
 
-      if (null !== this._textArea) {
+      if (null !== this._container) {
         this.getText();
-        L.DomEvent.removeListener(this._textArea, 'keypress',
+        L.DomEvent.removeListener(this._container, 'keypress',
           L.DomEvent.stopPropagation);
-        this._textArea.parentNode.removeChild(this._textArea);
-        this._textArea = null;
+        this._container.parentNode.removeChild(this._container);
+        this._container = null;
       }
-      this.feature._text = this._text;
 
-      if (this.map.hasLayer(this.feature)) {
-        this.feature._renderText();
-      }
+      this.feature.setText(this._text);
     }
 
     L.Editable.RectangleEditor.prototype.disable.call(this);
@@ -138,8 +140,8 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
 
   _focus: function() {
     L.Util.requestAnimFrame(function() {
-      if (null !== this._textArea) {
-        this._textArea.focus();
+      if (null !== this._container) {
+        this._container.focus();
       }
     }, this);
   },
@@ -155,7 +157,7 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
     var offset = this.map._latLngToNewLayerPoint(
       bounds.getNorthWest(), evt.zoom, evt.center);
 
-    L.DomUtil.setTransform(this._textArea, offset, scale.toFixed(3));
+    L.DomUtil.setTransform(this._container, offset, scale.toFixed(3));
   },
 
 
@@ -168,8 +170,8 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
     var size;
     var center;
     var feature  = this.feature;
-    var bounds   = feature._bounds;
-    var textArea = this._textArea;
+    var bounds;
+    var textArea = this._container;
     var map      = this.map;
     var bounds;
 
@@ -190,7 +192,6 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
         textArea.style.display = '';
         textArea.style.position = 'absolute';
         textArea.setAttribute('spellcheck', false);
-
         this._focus();
       } else {
         textArea.style.display = 'none';

@@ -1,11 +1,10 @@
 var L = require('leaflet');
-require('../../');
-require('../../src/SVG');
-
 var SVGOverlay = require('leaflet-schematic');
-var xhr = global.xhr = require('xhr');
+var xhr = require('xhr');
+require('../../');
 
-var map = L.map('map', {
+
+window.map = L.map('map', {
   crs: L.CRS.Simple,
   minZoom: 0,
   maxZoom: 20,
@@ -19,66 +18,76 @@ var map = L.map('map', {
   editable: true
 });
 
-var svg = global.svg = new SVGOverlay('data/sample.svg', {
-    usePathContainer: true,
-    load: function(url, callback) {
-      xhr({
-        uri: url,
-        headers: {
-          "Content-Type": "image/svg+xml"
-        }
-      }, function (err, resp, svg) {
-        callback(err, svg);
-      });
-    }
-  })
-  .once('load', function() {
-    map.fitBounds(svg.getBounds(), { animate: false });
-  })
-  .addTo(map);
 
-// //******************************************************************************
-//
+var svgOverlay = window.svg = new SVGOverlay('data/sample.svg', {
+
+  usePathContainer: true,
+
+
+  load: function(url, callback) {
+    xhr({
+      uri: url,
+      headers: {
+        'Content-Type': 'image/svg+xml'
+      }
+    }, function (err, resp, svg) {
+      callback(err, svg);
+    });
+  }
+
+})
+.once('load', function() {
+  window.map.fitBounds(svgOverlay.getBounds(), { animate: false });
+})
+.addTo(window.map);
+
+//******************************************************************************
 L.EditControl = L.Control.extend({
+
   options: {
     position: 'topleft',
     callback: null,
     kind: '',
     html: ''
   },
+
+
   onAdd: function (map) {
     var container = L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
-        link = L.DomUtil.create('a', '', container);
+
+    link = L.DomUtil.create('a', '', container);
     link.href = '#';
     link.title = 'Create a new ' + this.options.kind;
     link.innerHTML = this.options.html;
     L.DomEvent
-      .on(link, 'click', L.DomEvent.stop)
-      .on(link, 'click', function () {
+    .on(link, 'click', L.DomEvent.stop)
+    .on(link, 'click', function () {
+      window.LAYER = this.options.callback.call(map.editTools,
+        L.latLng([0, 0]), {
+          ratio: svgOverlay._ratio,
+          renderer: svgOverlay._renderer,
+          fontSize: Math.max(L.SVG
+            .calcFontSize(svgOverlay._renderer._container).size, 200),
+          fontColor: '#55f'
+        }
+      );
+    }, this);
 
-        window.LAYER = this.options.callback.call(map.editTools,
-          L.latLng([0, 0]), {
-            ratio: svg._ratio,
-            renderer: svg._renderer,
-            fontSize: Math.max(L.SVG.calcFontSize(svg._renderer._container).size, 200),
-            fontColor: '#55f'
-          }
-        );
-      }, this);
     return container;
   }
 });
 
 
 L.NewTextControl = L.EditControl.extend({
+
   options: {
     position: 'topleft',
     callback: L.Editable.prototype.startTextBox,
     kind: 'text',
     html: 'T'
   }
+
 });
 
 
-map.addControl(new L.NewTextControl());
-// //******************************************************************************
+window.map.addControl(new L.NewTextControl());

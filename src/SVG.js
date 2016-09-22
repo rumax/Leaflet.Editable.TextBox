@@ -7,7 +7,6 @@
  */
 
 var DEFAULT_SIZE = 12;
-var LINE_FACTOR  = 1.12;
 
 /**
  * @param  {SVGElement} svg
@@ -26,14 +25,14 @@ L.SVG.calcFontSize = L.SVG.calcFontSize || function(svg) {
     for (var ind = texts.length - 1; 0 <= ind; --ind) {
       fontSizeAttr = texts[ind].getAttribute('font-size');
       if (null !== fontSizeAttr) {
-	textSize = parseFloat(texts[ind].getAttribute('font-size'));
-	size += textSize;
-	if (sizeMin > textSize) {
+        textSize = parseFloat(texts[ind].getAttribute('font-size'));
+        size += textSize;
+        if (sizeMin > textSize) {
           sizeMin = textSize;
-	}
-	if (sizeMax < textSize) {
+        }
+        if (sizeMax < textSize) {
           sizeMax = textSize;
-	}
+        }
       }
     }
 
@@ -45,94 +44,8 @@ L.SVG.calcFontSize = L.SVG.calcFontSize || function(svg) {
   }
 
   return {
-    size: size,
-    min: size,
-    max: size
+    size: DEFAULT_SIZE,
+    min: DEFAULT_SIZE,
+    max: DEFAULT_SIZE
   };
 };
-
-
-L.SVG.include({
-
-  renderText: function(layer) {
-    var textElement = layer._textNode;
-    var text  = layer._text;
-
-    if (textElement) {
-      textElement.parentNode.removeChild(textElement);
-    }
-    textElement = layer._textNode = L.SVG.create('text');
-    layer.updateStyle();
-    this._rootGroup.appendChild(textElement);
-
-    if (text) {
-      var scale = layer._getScale(this._map.getZoom());
-      var bounds = layer.getBounds();
-      var center = layer._map.latLngToLayerPoint(bounds.getCenter());
-      var pos = layer._map.latLngToLayerPoint(bounds.getNorthWest());
-      var size = L.point(2 * Math.abs(center.x - pos.x),
-                         2 * Math.abs(center.y - pos.y)).divideBy(scale);
-      var chars = text.split('');
-      var line = chars.shift();
-      var char = chars.shift();
-      var lineInd = 1;
-      var maxWidth = size.x - layer.options.padding;
-      var tspan = this._textMakeNextLine(textElement, line, {
-        x: layer.options.padding
-      });
-      var lineHeight = textElement.getBBox().height;
-      tspan.setAttribute('dy', lineHeight);
-
-      while (char) {
-        if (' ' === char) {
-          line += char;
-        } else if ('\n' === char) {
-          line = '';
-          tspan = this._textMakeNextLine(textElement, line, {
-            x: layer.options.padding,
-            dy: LINE_FACTOR * lineHeight
-          });
-        } else if ('\t' !== char) { //skip tabs
-          var prevLine = line;
-          line += char;
-          tspan.firstChild.nodeValue = line;
-          var lineLength = layer.options.padding +
-            tspan.getComputedTextLength();
-
-          if (lineLength > maxWidth && 1 <= line.length) {
-            ++lineInd;
-            tspan.firstChild.nodeValue = prevLine.replace(/\s*$/gm, '');
-            prevLine = '';
-            line = char;
-            tspan = this._textMakeNextLine(textElement, line, {
-              x: layer.options.padding,
-              dy: LINE_FACTOR * lineHeight
-            });
-          }
-        }
-        char = chars.shift();
-      }
-    } else if (null !== textElement) {
-      textElement.parentNode.removeChild(textElement);
-      textElement = null;
-    }
-
-    return textElement;
-  },
-
-
-  _textMakeNextLine: function(container, text, attrs) {
-    var tspan = L.SVG.create('tspan');
-    var key;
-
-    for (key in attrs || {}) {
-      if (attrs.hasOwnProperty(key)) {
-        tspan.setAttribute(key, attrs[key]);
-      }
-    }
-    tspan.appendChild(document.createTextNode(text || ''));
-    container.appendChild(tspan);
-
-    return tspan;
-  }
-});
