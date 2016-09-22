@@ -4,7 +4,7 @@
   "description": "TextBox for Leaflet.Editable",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "browserify tests/*.test.js | tape-run",
     "watch": "watchify -v -d -s L.Editable.Textbox ./demo/js/index.js -o ./demo/js/build.js",
     "build-js": "browserify -v -d -s L.Editable.Textbox -u leaflet -u leaflet-editable ./index.js -o ./dist/L.Editable.Textbox-src.js",
     "compress": "uglifyjs ./dist/L.Editable.Textbox-src.js -o ./dist/L.Editable.Textbox.js --comments -m",
@@ -34,7 +34,8 @@
     "leaflet-schematic": "^1.0.0-beta.1",
     "rimraf": "*",
     "serve": "^1.4.0",
-    "tape": "^4.4.0",
+    "tape": "^4.6.0",
+    "tape-run": "^2.1.4",
     "uglifyjs": "^2.4.10",
     "watchify": "^3.7.0",
     "xhr": "^2.2.0"
