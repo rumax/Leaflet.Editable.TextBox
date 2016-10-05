@@ -67,7 +67,7 @@ L.Editable.TextBoxEditor = L.Editable.RectangleEditor.extend({
 
       this._text = this.feature.getText();
       if (this._text) {
-        this._container.innerHTML = this._text;
+        this._container.value = this._text;
       }
 
       L.DomEvent.addListener(this._container, 'keypress',
